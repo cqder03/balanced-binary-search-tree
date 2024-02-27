@@ -1,3 +1,4 @@
+// Imported funcions as per need //
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
     return;
@@ -63,9 +64,9 @@ function mergeSort(array) {
   return merge;
 }
 
-let testArr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-let testArr2 = [1, 2, 3, 4, 5, 6, 7];
+// Imported funcions as per need //
 
+// Tree building classes //
 class Node {
   constructor(value) {
     this.data = value;
@@ -254,4 +255,114 @@ class Tree {
       return arr;
     }
   }
+
+  height(node) {
+    if (node === null) return 0;
+
+    const leftHeight = this.height(node.left);
+    const rightHeight = this.height(node.right);
+
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  depth(node) {
+    let root = this.root;
+    let depth = 0;
+
+    while (root.data !== node.data) {
+      if (root.data > node.data) {
+        depth++;
+        root = root.left;
+      } else if (root.data < node.data) {
+        depth++;
+        root = root.right;
+      }
+    }
+
+    return depth;
+  }
+
+  isBalanced(node) {
+    if (node === null) return true;
+
+    const leftHeight = this.height(node.left);
+    const rightHeight = this.height(node.right);
+    const heightDiffernece = Math.abs(leftHeight - rightHeight);
+    
+    if (heightDiffernece > 1) {
+      return false;
+    }
+
+    const leftSubTree = this.isBalanced(node.left);
+    const rightSubTree = this.isBalanced(node.right);
+
+    if (heightDiffernece <= 1 && leftSubTree && rightSubTree) {
+      return true;
+    }
+
+    return false;
+  }
+
+  rebalance() {
+    const rebalanced = this.inOrder(this.root);
+    this.root = this.buildTree(rebalanced, 0, rebalanced.length - 1);
+  }
 }
+
+// Tree building classes //
+
+// Tie it all together part //
+
+function driverScript() {
+  const treeArray = [];
+  const numberOfElements = 30;
+
+  for (let i = 0; i < numberOfElements; i++) {
+    let num = Math.floor(Math.random() * (100 - 1) + 1);
+    treeArray.push(num);
+  } 
+
+  const balanceSubTree = new Tree(treeArray);
+
+  console.log('Printing created tree..');
+  console.log(`Element ${treeArray[5]} height ${balanceSubTree.height(balanceSubTree.find(balanceSubTree.root, treeArray[5]))}`);
+  prettyPrint(balanceSubTree.root);
+  console.log(`Checking if tree is balanced: (${balanceSubTree.isBalanced(balanceSubTree.root)})`);
+  console.log(`Printing elements in level order: ${balanceSubTree.levelOrder(balanceSubTree.root)}`);
+  console.log(`Printing elements in preorder: ${balanceSubTree.preOrder(balanceSubTree.root)}`);
+  console.log(`Printing elements in order: ${balanceSubTree.inOrder(balanceSubTree.root)}`);
+  console.log(`Printing elements in postorder: ${balanceSubTree.postOrder(balanceSubTree.root)}`);
+
+  unbalanceArray = [];
+
+  for (let i = 0; i < 6; i++) {
+    let num = Math.floor(Math.random() * (200 - 100) + 100);
+    unbalanceArray.push(num);
+  }
+
+  console.log('Unbalancing the tree by adding 6 random numbers over 100.');
+
+  unbalanceArray.forEach(number => {
+    balanceSubTree.insert(balanceSubTree.root, number);
+  });
+
+  console.log(`Checking if tree is balanced: (${balanceSubTree.isBalanced(balanceSubTree.root)})`);
+  console.log('Pringing unbalanced tree...');
+
+  prettyPrint(balanceSubTree.root);
+
+  console.log('Balancing tree...');
+  balanceSubTree.rebalance();
+  console.log(`Checking if tree is balanced: (${balanceSubTree.isBalanced(balanceSubTree.root)})`);
+
+  console.log('Prining balanced tree...');
+
+  prettyPrint(balanceSubTree.root);
+
+  console.log(`Printing elements in level order: ${balanceSubTree.levelOrder(balanceSubTree.root)}`);
+  console.log(`Printing elements in preorder: ${balanceSubTree.preOrder(balanceSubTree.root)}`);
+  console.log(`Printing elements in order: ${balanceSubTree.inOrder(balanceSubTree.root)}`);
+  console.log(`Printing elements in postorder: ${balanceSubTree.postOrder(balanceSubTree.root)}`);
+}
+
+// Tie it all together part //
